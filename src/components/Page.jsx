@@ -75,12 +75,12 @@ export default function Page () {
         setNames(characterNames);
     }
 
-    return (<>
+    return (<div className='card-grid'>
         {data.map(element => (
             <div className='card' key={element.id} onClick={handleClick}>
                 <p>{element.name}</p>
-                <img src={element.url} alt={element.name} width={'300px'}/>    
+                <img src={element.url} alt={element.name}/>    
             </div>
         ))}
-    </>);
+    </div>);
 }
