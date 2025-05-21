@@ -17,6 +17,8 @@ let charNames = [
     "Appa",
     "Momo",
     "Naga",
+    "Ty Lee",
+    "Mai"
   ];
 
 function shuffleArray(array) {
@@ -55,10 +57,16 @@ export default function Page () {
             const promises = names.map(name => fetchData(name));
             await fetchAll(promises);
         })();
+        const savedScroll = sessionStorage.getItem("scrollPosition");
+        if (savedScroll) {
+        window.scrollTo({ top: parseInt(savedScroll), behavior: "auto" });
+        }
     }, [names]);
 
     
     function handleClick() {
+        const y = window.scrollY;
+        sessionStorage.setItem("scrollPosition", y);
         const shuffledNames = shuffleArray([...names]);
         setNames(shuffledNames);
     }
