@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import Card from "./Card";
 import '../styles/styles.css'
 
 let charNames = [
@@ -68,18 +69,17 @@ export default function Cards () {
     }, [names]);
 
     
-    function handleClick(e) {
+    function handleClick(id) {
         const y = window.scrollY;
         sessionStorage.setItem("scrollPosition", y);
-        if (clickedIds.includes(e.currentTarget.id)) {
+        if (clickedIds.includes(id)) {
             clickedIds = [];
             setScore(0);
         }
         else {
-            clickedIds.push(e.currentTarget.id);
+            clickedIds.push(id);
             setScore(score + 1);
         }
-
         const shuffledNames = shuffleArray([...names]);
         setNames(shuffledNames);
     }
@@ -91,14 +91,14 @@ export default function Cards () {
         </div>
         <div className='card-grid'>
             {names.map(name => {
-                
                 const element = data.find(obj => obj.name === name);
                 if (!element) return null;
                 return (
-                    <div className='card' id={element.id} key={element.id} onClick={handleClick}>
-                        <p>{element.name}</p>
-                        <img src={element.url} alt={element.name}/>    
-                    </div>
+                    <Card key={element.id} 
+                    name={element.name} 
+                    url={element.url} 
+                    onClick={() => handleClick(element.id)}>    
+                    </Card>
                 );
             })}
         </div>
