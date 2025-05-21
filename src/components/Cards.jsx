@@ -21,6 +21,8 @@ let charNames = [
     "Mai"
   ];
 
+let clickedIds = [];
+
 function shuffleArray(array) {
     for (let i = array.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
@@ -29,9 +31,10 @@ function shuffleArray(array) {
     return array;
 }
 
-export default function Page () {
+export default function Cards () {
     const [names, setNames] = useState(charNames);
     const [data, setData] = useState([]);
+    const [score, setScore] = useState(0);
 
     async function fetchData (name) {
         const res = await fetch('https://last-airbender-api.fly.dev/api/v1/characters?name=' + name);
@@ -44,7 +47,8 @@ export default function Page () {
 
         return { name: filteredData[0].name,
                 url: filteredData[0].photoUrl,
-                id: filteredData[0]._id }
+                id: filteredData[0]._id
+            }
     }
 
     async function fetchAll(promises) {
@@ -64,23 +68,40 @@ export default function Page () {
     }, [names]);
 
     
-    function handleClick() {
+    function handleClick(e) {
         const y = window.scrollY;
         sessionStorage.setItem("scrollPosition", y);
+        if (clickedIds.includes(e.currentTarget.id)) {
+            clickedIds = [];
+            setScore(0);
+        }
+        else {
+            clickedIds.push(e.currentTarget.id);
+            setScore(score + 1);
+        }
+
         const shuffledNames = shuffleArray([...names]);
         setNames(shuffledNames);
     }
 
-    return (<div className='card-grid'>
-        {names.map(name => {
-            const element = data.find(obj => obj.name === name);
-            if (!element) return null;
-            return (
-                <div className='card' key={element.id} onClick={handleClick}>
-                    <p>{element.name}</p>
-                    <img src={element.url} alt={element.name}/>    
-                </div>
-            );
-        })}
-    </div>);
+    return (
+        <>
+        <div id="score">
+            Score: {score}
+        </div>
+        <div className='card-grid'>
+            {names.map(name => {
+                
+                const element = data.find(obj => obj.name === name);
+                if (!element) return null;
+                return (
+                    <div className='card' id={element.id} key={element.id} onClick={handleClick}>
+                        <p>{element.name}</p>
+                        <img src={element.url} alt={element.name}/>    
+                    </div>
+                );
+            })}
+        </div>
+        </>
+    );
 }
