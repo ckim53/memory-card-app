@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import '../styles/styles.css'
 
-const characterNames = [
+let charNames = [
     "Zuko",
     "Iroh",
     "Azula",
@@ -28,19 +28,12 @@ function shuffleArray(array) {
 }
 
 export default function Page () {
-    const [names, setNames] = useState(characterNames);
+    const [names, setNames] = useState(charNames);
     const [data, setData] = useState([]);
 
     async function fetchData (name) {
-        try {
-            const res = await fetch('https://last-airbender-api.fly.dev/api/v1/characters?name=' + name);
-        
-        if (!res.ok) {
-            throw new Error(`HTTP error! status: ${res.status}`);
-        }
-
+        const res = await fetch('https://last-airbender-api.fly.dev/api/v1/characters?name=' + name);
         const data = await res.json();
-        console.log(data);
         const filteredData = data.filter( element => 
             !element.name.includes("(") && 
             !element.name.includes(")") && 
@@ -49,15 +42,7 @@ export default function Page () {
 
         return { name: filteredData[0].name,
                 url: filteredData[0].photoUrl,
-                id: filteredData[0].id }
-        } catch (error) {
-            console.error("Error fetching data for:", name, "\n", error);
-        return {
-            name: name,
-            url: "",
-            id: name // fallback ID to keep JSX from breaking
-        };
-        }
+                id: filteredData[0]._id }
     }
 
     async function fetchAll(promises) {
@@ -66,21 +51,28 @@ export default function Page () {
     }
 
     useEffect(() => {
-        const promises = names.map(name => fetchData(name));
-        fetchAll(promises);
+        (async () => {
+            const promises = names.map(name => fetchData(name));
+            await fetchAll(promises);
+        })();
     }, [names]);
 
+    
     function handleClick() {
-        const characterNames = shuffleArray(characterNames);
-        setNames(characterNames);
+        const shuffledNames = shuffleArray([...names]);
+        setNames(shuffledNames);
     }
 
     return (<div className='card-grid'>
-        {data.map(element => (
-            <div className='card' key={element.id} onClick={handleClick}>
-                <p>{element.name}</p>
-                <img src={element.url} alt={element.name}/>    
-            </div>
-        ))}
+        {names.map(name => {
+            const element = data.find(obj => obj.name === name);
+            if (!element) return null;
+            return (
+                <div className='card' key={element.id} onClick={handleClick}>
+                    <p>{element.name}</p>
+                    <img src={element.url} alt={element.name}/>    
+                </div>
+            );
+        })}
     </div>);
 }
