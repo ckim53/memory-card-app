@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Card from "./Card";
+import Scoreboard from "./Scoreboard";
 import '../styles/styles.css'
 
 let charNames = [
@@ -36,6 +37,7 @@ export default function Cards () {
     const [names, setNames] = useState(charNames);
     const [data, setData] = useState([]);
     const [score, setScore] = useState(0);
+    const [win, setWin] = useState(false);
 
     async function fetchData (name) {
         const res = await fetch('https://last-airbender-api.fly.dev/api/v1/characters?name=' + name);
@@ -77,6 +79,9 @@ export default function Cards () {
             setScore(0);
         }
         else {
+            if ((score + 1) == 15) {
+                setWin(true);
+            }
             clickedIds.push(id);
             setScore(score + 1);
         }
@@ -84,11 +89,15 @@ export default function Cards () {
         setNames(shuffledNames);
     }
 
+    function handleRestart() {
+        clickedIds = [];
+        setWin(false);
+        setScore(0);
+    }
+
     return (
         <>
-        <div id="score">
-            Score: {score}
-        </div>
+       <Scoreboard score={score} winStatus={win} restart={handleRestart}></Scoreboard>
         <div className='card-grid'>
             {names.map(name => {
                 const element = data.find(obj => obj.name === name);
