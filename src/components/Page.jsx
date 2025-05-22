@@ -37,6 +37,7 @@ export default function Cards () {
     const [names, setNames] = useState(charNames);
     const [data, setData] = useState([]);
     const [score, setScore] = useState(0);
+    const [bestScore, setBestScore] = useState(0);
     const [win, setWin] = useState(false);
 
     async function fetchData (name) {
@@ -72,6 +73,7 @@ export default function Cards () {
 
     
     function handleClick(id) {
+        if (!win) {
         const y = window.scrollY;
         sessionStorage.setItem("scrollPosition", y);
         if (clickedIds.includes(id)) {
@@ -80,6 +82,9 @@ export default function Cards () {
         }
         else {
             if ((score + 1) == 15) {
+                if (score > bestScore) {
+                    setBestScore(score);
+                }
                 setWin(true);
             }
             clickedIds.push(id);
@@ -87,6 +92,7 @@ export default function Cards () {
         }
         const shuffledNames = shuffleArray([...names]);
         setNames(shuffledNames);
+        }
     }
 
     function handleRestart() {
@@ -97,7 +103,9 @@ export default function Cards () {
 
     return (
         <>
-       <Scoreboard score={score} winStatus={win} restart={handleRestart}></Scoreboard>
+        <div id="title">Avatar Memory Game</div><br />
+        <div id="description">Get points by clicking on an image but don't click on any more than once!</div>
+        <Scoreboard score={score} winStatus={win} restart={handleRestart} best={bestScore}></Scoreboard>
         <div className='card-grid'>
             {names.map(name => {
                 const element = data.find(obj => obj.name === name);
@@ -112,5 +120,5 @@ export default function Cards () {
             })}
         </div>
         </>
-    );
+        );
 }
