@@ -3,24 +3,6 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 
-const characterNames = [
-  "Zuko",
-  "Iroh",
-  "Azula",
-  "Katara",
-  "Suki",
-  "Aang",
-  "Toph",
-  "Sokka",
-  "Asami",
-  "Kuvira",
-  "Bolin",
-  "Korra",
-  "Appa",
-  "Momo",
-  "Naga",
-];
-
 function App() {
   const [count, setCount] = useState(0);
 
