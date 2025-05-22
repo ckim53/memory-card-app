@@ -78,13 +78,11 @@ export default function Cards () {
         sessionStorage.setItem("scrollPosition", y);
         if (clickedIds.includes(id)) {
             clickedIds = [];
+            setBestScore(score);
             setScore(0);
         }
         else {
             if ((score + 1) == 15) {
-                if (score > bestScore) {
-                    setBestScore(score);
-                }
                 setWin(true);
             }
             clickedIds.push(id);
