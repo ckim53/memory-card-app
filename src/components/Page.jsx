@@ -95,6 +95,7 @@ export default function Cards () {
 
     function handleRestart() {
         clickedIds = [];
+        setBestScore(0);
         setWin(false);
         setScore(0);
     }
